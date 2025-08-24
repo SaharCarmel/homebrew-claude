@@ -1,7 +1,7 @@
 class ClaudeCodeStatusLine < Formula
   desc "Enhanced status line for Claude Code with intelligent conversation summaries"
   homepage "https://github.com/SaharCarmel/claude-code-status-line"
-  url "https://github.com/SaharCarmel/claude-code-status-line/archive/refs/tags/v1.3.3tar.gz"
+  url "https://github.com/SaharCarmel/claude-code-status-line/archive/refs/tags/v1.3.3.tar.gz"
   sha256 "488d1f2cfaf3375d57b479474ce1399e77b44aba72c70709130be8df9d6a940c"
   license "MIT"
   version "1.3.3"
