@@ -45,7 +45,39 @@ class ClaudeCodeStatusLine < Formula
 
   def post_install
     ohai "🔄 Updated to version #{version}!"
-    ohai "📜 View what's new: https://github.com/SaharCarmel/claude-code-status-line/blob/main/CHANGELOG.md"
+    
+    # Fetch and display the latest changelog entry
+    changelog_url = "https://raw.githubusercontent.com/SaharCarmel/claude-code-status-line/main/CHANGELOG.md"
+    changelog_content = `curl -s "#{changelog_url}"`
+    
+    if $?.success? && !changelog_content.empty?
+      # Extract the latest version section (from [version] to next [version] or end)
+      lines = changelog_content.split("\n")
+      in_current_version = false
+      changelog_lines = []
+      
+      lines.each do |line|
+        if line.match?(/^## \[#{Regexp.escape(version)}\]/)
+          in_current_version = true
+          changelog_lines << line
+        elsif line.match?(/^## \[/) && in_current_version
+          break
+        elsif in_current_version
+          changelog_lines << line
+        end
+      end
+      
+      unless changelog_lines.empty?
+        ohai "📋 What's New:"
+        changelog_lines[0..15].each do |line|  # Show first 15 lines max
+          puts "#{line}"
+        end
+        puts "" if changelog_lines.length > 15
+        ohai "📜 Full changelog: https://github.com/SaharCarmel/claude-code-status-line/blob/main/CHANGELOG.md"
+      end
+    else
+      ohai "📜 View what's new: https://github.com/SaharCarmel/claude-code-status-line/blob/main/CHANGELOG.md"
+    end
   end
 
   test do
