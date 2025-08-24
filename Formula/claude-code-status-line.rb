@@ -10,25 +10,39 @@ class ClaudeCodeStatusLine < Formula
   depends_on "node" # for bun/ccusage
 
   def install
-    # Create .claude directory in user's home
-    claude_dir = "#{ENV["HOME"]}/.claude"
-    system "mkdir", "-p", claude_dir
-    system "mkdir", "-p", "#{claude_dir}/statusline-summaries"
+    # Install to libexec and create wrapper script
+    libexec.install "statusline-haiku-summary.sh"
     
-    # Install the main script
-    system "cp", "statusline-haiku-summary.sh", "#{claude_dir}/statusline-haiku-summary.sh"
-    system "chmod", "+x", "#{claude_dir}/statusline-haiku-summary.sh"
-    
-    # Create a symlink in brew prefix for easy access
-    bin.install_symlink "#{claude_dir}/statusline-haiku-summary.sh" => "claude-status-line"
+    # Create wrapper script that installs to ~/.claude on first run
+    (bin/"claude-code-status-line-install").write <<~EOS
+      #!/bin/bash
+      set -e
+      
+      # Create .claude directory
+      mkdir -p "$HOME/.claude"
+      mkdir -p "$HOME/.claude/statusline-summaries"
+      
+      # Copy script to user's home
+      cp "#{libexec}/statusline-haiku-summary.sh" "$HOME/.claude/statusline-haiku-summary.sh"
+      chmod +x "$HOME/.claude/statusline-haiku-summary.sh"
+      
+      echo "✅ Claude Code Status Line installed to ~/.claude/"
+      echo "📝 Add this to your ~/.claude/settings.json:"
+      echo '  "statusLine": {'
+      echo '    "type": "command",'
+      echo '    "command": "bash ~/.claude/statusline-haiku-summary.sh"'
+      echo '  }'
+    EOS
   end
 
   def caveats
     <<~EOS
       🎉 Claude Code Status Line installed successfully!
       
-      📝 Next step: Add this to your ~/.claude/settings.json:
+      📥 IMPORTANT: Run this command to complete installation:
+        claude-code-status-line-install
       
+      📝 Then add this to your ~/.claude/settings.json:
         "statusLine": {
           "type": "command", 
           "command": "bash ~/.claude/statusline-haiku-summary.sh"
@@ -45,6 +59,7 @@ class ClaudeCodeStatusLine < Formula
 
   def post_install
     ohai "🔄 Updated to version #{version}!"
+    ohai "📥 Don't forget to run: claude-code-status-line-install"
     
     # Fetch and display the latest changelog entry
     changelog_url = "https://raw.githubusercontent.com/SaharCarmel/claude-code-status-line/main/CHANGELOG.md"
@@ -81,6 +96,12 @@ class ClaudeCodeStatusLine < Formula
   end
 
   test do
+    assert_predicate libexec/"statusline-haiku-summary.sh", :exist?
+    assert_predicate bin/"claude-code-status-line-install", :exist?
+    assert_predicate bin/"claude-code-status-line-install", :executable?
+    
+    # Test that the installer works
+    system bin/"claude-code-status-line-install"
     assert_predicate "#{ENV["HOME"]}/.claude/statusline-haiku-summary.sh", :exist?
     assert_predicate "#{ENV["HOME"]}/.claude/statusline-haiku-summary.sh", :executable?
   end
