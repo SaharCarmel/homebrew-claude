@@ -37,9 +37,15 @@ class ClaudeCodeStatusLine < Formula
       🔄 Then restart Claude Code to see intelligent 5-word summaries!
       
       📖 Learn more: https://github.com/SaharCarmel/claude-code-status-line
+      📜 Changelog: https://github.com/SaharCarmel/claude-code-status-line/blob/main/CHANGELOG.md
       
       💡 To update: brew upgrade claude-code-status-line
     EOS
+  end
+
+  def post_install
+    ohai "🔄 Updated to version #{version}!"
+    ohai "📜 View what's new: https://github.com/SaharCarmel/claude-code-status-line/blob/main/CHANGELOG.md"
   end
 
   test do
