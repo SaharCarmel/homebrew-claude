@@ -1,10 +1,10 @@
 class ClaudeCodeStatusLine < Formula
   desc "Enhanced status line for Claude Code with intelligent conversation summaries"
   homepage "https://github.com/SaharCarmel/claude-code-status-line"
-  url "https://github.com/SaharCarmel/claude-code-status-line/archive/refs/tags/v1.3.1.tar.gz"
-  sha256 "a3ced98f33d485573eb5bf147a84c13760d12024b1f56353707d04120615e974"
+  url "https://github.com/SaharCarmel/claude-code-status-line/archive/refs/tags/v1.3.3tar.gz"
+  sha256 "488d1f2cfaf3375d57b479474ce1399e77b44aba72c70709130be8df9d6a940c"
   license "MIT"
-  version "1.3.1"
+  version "1.3.3"
 
   depends_on "jq"
   depends_on "node" # for bun/ccusage
